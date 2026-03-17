@@ -42,10 +42,34 @@ export default function RoomPage() {
       lastSeen: Date.now()
     };
 
+    // Create bot players for demo
+    const botPlayers: Player[] = [
+      {
+        id: 'bot-1',
+        name: 'ChefBot',
+        color: '#EC4899',
+        emoji: '🤖',
+        isHost: false,
+        score: 0,
+        isReady: false,
+        lastSeen: Date.now()
+      },
+      {
+        id: 'bot-2',
+        name: 'FoodieAI',
+        color: '#10B981',
+        emoji: '🍕',
+        isHost: false,
+        score: 0,
+        isReady: false,
+        lastSeen: Date.now()
+      }
+    ];
+
     const initialRoom: GameRoom = {
       id: roomId,
       name: `Salon ${roomId}`,
-      players: [player],
+      players: [player, ...botPlayers],
       restaurants: [],
       gameState: 'lobby',
       createdAt: Date.now(),
@@ -69,6 +93,75 @@ export default function RoomPage() {
       type: 'system'
     };
     setMessages([welcomeMessage]);
+
+    // Simulate bots joining and submitting restaurants
+    setTimeout(() => {
+      const botRestaurants = [
+        { name: 'Le Petit Bistro', emoji: '🥘', submittedBy: 'bot-1' },
+        { name: 'Pizza Palace', emoji: '🍕', submittedBy: 'bot-2' }
+      ];
+
+      const restaurantsWithIds = botRestaurants.map((rest, index) => ({
+        ...rest,
+        id: `restaurant-bot-${index + 1}`
+      }));
+
+      setRoom(prev => prev ? {
+        ...prev,
+        restaurants: [...prev.restaurants, ...restaurantsWithIds]
+      } : null);
+
+      // Add bot messages
+      const botMessages: ChatMessage[] = [
+        {
+          id: 'bot-msg-1',
+          playerId: 'bot-1',
+          playerName: 'ChefBot',
+          message: 'propose Le Petit Bistro 🥘',
+          timestamp: Date.now() + 1000,
+          type: 'system'
+        },
+        {
+          id: 'bot-msg-2',
+          playerId: 'bot-2',
+          playerName: 'FoodieAI',
+          message: 'propose Pizza Palace 🍕',
+          timestamp: Date.now() + 2000,
+          type: 'system'
+        }
+      ];
+      setMessages(prev => [...prev, ...botMessages]);
+    }, 2000);
+
+    // Simulate bots getting ready after user submits restaurant
+    setTimeout(() => {
+      setRoom(prev => prev ? {
+        ...prev,
+        players: prev.players.map(p => 
+          p.id.startsWith('bot-') ? { ...p, isReady: true } : p
+        )
+      } : null);
+
+      const readyMessages: ChatMessage[] = [
+        {
+          id: 'bot-ready-1',
+          playerId: 'bot-1',
+          playerName: 'ChefBot',
+          message: 'est prêt! ✅',
+          timestamp: Date.now() + 3000,
+          type: 'system'
+        },
+        {
+          id: 'bot-ready-2',
+          playerId: 'bot-2',
+          playerName: 'FoodieAI',
+          message: 'est prêt! ✅',
+          timestamp: Date.now() + 4000,
+          type: 'system'
+        }
+      ];
+      setMessages(prev => [...prev, ...readyMessages]);
+    }, 8000);
   }, [roomId, playerName, playerEmoji, isHost]);
 
   const handleSubmitRestaurant = (restaurant: Omit<Restaurant, 'id'>) => {
