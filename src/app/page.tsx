@@ -21,7 +21,7 @@ export default function HomePage() {
     
     // Simulate room creation
     setTimeout(() => {
-      router.push(`/room/${roomCode}?player=${encodeURIComponent(playerName)}&emoji=${playerEmoji}&host=true`);
+      router.push(`/room?id=${roomCode}&player=${encodeURIComponent(playerName)}&emoji=${playerEmoji}&host=true`);
     }, 1000);
   };
 
@@ -32,7 +32,7 @@ export default function HomePage() {
     const playerEmoji = getRandomPlayerEmoji();
     
     setTimeout(() => {
-      router.push(`/room/${joinCode.toUpperCase()}?player=${encodeURIComponent(playerName)}&emoji=${playerEmoji}`);
+      router.push(`/room?id=${joinCode.toUpperCase()}&player=${encodeURIComponent(playerName)}&emoji=${playerEmoji}`);
     }, 500);
   };
 

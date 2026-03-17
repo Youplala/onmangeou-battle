@@ -34,7 +34,7 @@ export default function GameLobby({
   
   // Generate room URL for sharing
   const roomUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/room/${room.id}` 
+    ? `${window.location.origin}/onmangeou-battle/room?id=${room.id}` 
     : '';
 
   const handleSubmit = () => {

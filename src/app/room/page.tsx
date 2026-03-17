@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useRef, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Player, Restaurant, GameRoom, MiniGame, ChatMessage } from '@/types/game';
 import { getRandomGame, MINI_GAMES } from '@/lib/games';
@@ -11,10 +11,18 @@ import TournamentView from '@/components/TournamentView';
 import ChatComponent from '@/components/ChatComponent';
 import PlayersList from '@/components/PlayersList';
 
-export default function RoomPage() {
-  const params = useParams();
+export default function RoomPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-950 flex items-center justify-center text-white text-2xl">Chargement...</div>}>
+      <RoomPage />
+    </Suspense>
+  );
+}
+
+function RoomPage() {
+  const searchParamsHook = useSearchParams();
   const searchParams = useSearchParams();
-  const roomId = params?.roomId as string;
+  const roomId = searchParamsHook?.get('id') || '';
   const playerName = searchParams?.get('player') || '';
   const playerEmoji = searchParams?.get('emoji') || '🎮';
   const isHost = searchParams?.get('host') === 'true';

@@ -41,7 +41,7 @@ export default function JoinPage() {
     
     // Simulate join delay
     setTimeout(() => {
-      router.push(`/room/${roomCode}?player=${encodeURIComponent(playerName)}&emoji=${playerEmoji}`);
+      router.push(`/room?id=${roomCode}&player=${encodeURIComponent(playerName)}&emoji=${playerEmoji}`);
     }, 1000);
   };
 
